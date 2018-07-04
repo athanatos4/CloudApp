@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <title>Home</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="src/katex/katex.css" type="text/css">
+    <script src="src/katex/katex.min.js" type="text/javascript"></script>
+    <script src="src/katex/contrib/auto-render.min.js" type="text/javascript"></script>
+
+    <script src="src/showdown/showdown.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="src/md.css" type="text/css">
+
+    <link rel="stylesheet" href="src/highlight/styles/default.css">
+    <script src="src/highlight/highlight.pack.js"></script>
+
+
+  </head>
+  <body>
+    <header id="main">
+      <!-- <div class="well" style=" background-color: white;">
+          <h1>Cloud ingé</h1>
+          <h3>Texte très interressant $$ \alpha $$</h3>
+          <p> $$ \alpha $$ </p>
+          <p> \( \alpha \) </p>
+      </div> -->
+    </header>
+
+    <div id="display"><div>
+    <script>
+        let converter = new showdown.Converter({
+            parseImgDimensions: true,
+            literalMidWordUnderscores: true,
+            literalMidWordAsterisks: true,
+            strikethrough: true,
+            tables: true,
+            tasklists: true,
+            ghMentions: true,
+            ghMentionsLink: "./profile/{u}",
+            openLinksInNewWindow: true,
+            backslashEscapesHTMLTags: false, // maybe true ?
+            emoji: true,
+            underline: true
+        });
+
+        fetch('./example.md').then(resp => resp.text()).then(displayMarkDown);
+
+        function displayMarkDown(md) {
+            // let text = "# hello \n### from the other side \n```\n$ \\alpha $\n```";
+            document.getElementById("display").innerHTML = converter.makeHtml(md);
+            hljs.initHighlighting();
+            let el = document.getElementById("display");
+            renderMathInElement(document.body, {
+            	delimiters: [
+            		{ left: "$$", right: "$$", display: true },
+            		{ left: "$", right: "$", display: false },
+            		{ left: "\\(", right: "\\)", display: false },
+            		{ left: "\\[", right: "\\]", display: true }
+            	],
+            	ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+            });
+        }
+    </script>
+  </body>
+</html>
