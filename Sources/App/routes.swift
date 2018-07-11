@@ -10,7 +10,7 @@ public func routes(_ router: Router) throws {
 
     // Example of configuring a controller
     let profileController = ProfileController()
-    // router.get("profile", String.parameter, use: profileController.find)
+    router.get("profile", String.parameter, use: profileController.find)
     router.post("profile", use: profileController.create)
 
     // Example of configuring a controller
