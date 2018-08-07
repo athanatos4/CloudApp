@@ -36,4 +36,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     try services.register(LeafProvider())
     config.prefer(LeafRenderer.self, for: ViewRenderer.self)
 
+    // My Services
+    services.register(CloudContainer())//, for: CloudContainer.self)
+
 }
