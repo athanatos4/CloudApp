@@ -16,6 +16,8 @@ public class CloudContainer: Service {
 	private var root = StructureNode()
 	private let fileManager = FileManager.default
 	public var urls = [String: URL]()
+	public var courses = [String: StructureNode]()
+	public var courseID2name = [String: String]()
 
 	public var structure: StructureNode {
 	    get {
@@ -32,18 +34,23 @@ public class CloudContainer: Service {
 		}
 	}
 
-	func buildStructure(fileManager fm: FileManager, url: URL)  -> StructureNode {
+	func buildStruct(fileManager fm: FileManager, url: URL, both: Bool=false)  -> StructureNode {
 		let node = StructureNode(name: url.lastPathComponent)
 
 		let urls = try? fm.contentsOfDirectory(at: url, includingPropertiesForKeys: [], options: .skipsHiddenFiles)
 
 		for url in urls! {
-			if let dest = try? fm.destinationOfSymbolicLink(atPath: url.path) {
-				print("this is a file " + url.path + " with symlink " + dest)
-				node.files[url.lastPathComponent] = URL(fileURLWithPath: dest)
+			if let dest=try? URL(fileURLWithPath: fm.destinationOfSymbolicLink(atPath: url.path)) {
+				if both && self.urls["courses"]! == dest.deletingLastPathComponent() {
+					// print("this is a link to the course " + dest.lastPathComponent + " with name " + url.lastPathComponent)
+					node.dirs[url.lastPathComponent] = self.courses[dest.lastPathComponent]!
+				} else {
+					// print("this is a file " + url.path + " with symlink " + dest.path)
+					node.files[url.lastPathComponent] = dest
+				}
 			} else {
-				print("this is a dir " + url.path)
-				node.dirs[url.lastPathComponent] = self.buildStructure(fileManager: fm, url: url)
+				// print("this is a dir " + url.path)
+				node.dirs[url.lastPathComponent] = self.buildStruct(fileManager: fm, url: url, both: both)
 			}
 		}
 
