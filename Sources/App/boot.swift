@@ -20,15 +20,14 @@ public func boot(_ app: Application) throws {
 
 	for dir in dirs {
 		cc.urls[dir] = workDir.appendingPathComponent(dir)
-		print(dir)
 		try fm.createDirectory(at: cc.urls[dir]!, withIntermediateDirectories: true)
-
 	}
 
 	let start = DispatchTime.now()
 	courses.forEach {cc.courses[$0] = cc.buildStruct(fileManager: fm, url: cc.urls["courses/"+$0]!)}
 	cc.structure = cc.buildStruct(fileManager: fm, url: cc.urls["root"]!, both: true)
 	let end = DispatchTime.now()
+	try cc.include()
 
     print("Time: \(Double(end.uptimeNanoseconds - start.uptimeNanoseconds) / 1_000_000_000)s")
 }

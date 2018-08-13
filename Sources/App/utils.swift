@@ -53,7 +53,24 @@ public class CloudContainer: Service {
 				node.dirs[url.lastPathComponent] = self.buildStruct(fileManager: fm, url: url, both: both)
 			}
 		}
-
 		return node
+	}
+
+	func include() throws {
+		guard #available(OSX 10.11, *) else {return}
+
+		let fm = FileManager()
+		let urls = try? fm.contentsOfDirectory(at: self.urls["include"]!, includingPropertiesForKeys: [], options: .skipsHiddenFiles)
+
+		for url in urls! {
+			let dest = self.urls["documents"]!.appendingPathComponent(UUID().uuidString)
+			if url.hasDirectoryPath {
+				try fm.moveItem(at: url, to: dest)
+			} else {
+				try fm.createDirectory(at: dest, withIntermediateDirectories: true)
+				try fm.moveItem(at: url, to: dest.appendingPathComponent(url.lastPathComponent))
+			}
+			try fm.createSymbolicLink(at: self.urls["converted"]!.appendingPathComponent(url.lastPathComponent), withDestinationURL: dest)
+		}
 	}
 }
